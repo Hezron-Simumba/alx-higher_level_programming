@@ -1,6 +1,5 @@
 #!/usr/bin/python3
-i = 0
-while i < 26: 
-    if i != 4 and i != 16:   
-        print('{:c}'. format(i + 97), end='')
-    i = i + 1
+# Author - Bamidele Adefolaju
+for letter in range(97, 123):
+    if chr(letter) != 'q' and chr(letter) != 'e':
+        print("{}".format(chr(letter)), end="")
