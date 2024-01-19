@@ -1,7 +1,10 @@
 #!/usr/bin/python3
-def print_last_digit(number):
-    if number < 0:
-        number = number * -1
-    last = number % 10
-    print(last, end='')
-    return(last)
+def magic_calculation(a, b):
+    from magic_calculation_102 import add, sub
+    if a < b:
+        c = add(a, b)
+        for i in range(4, 6):
+            c = add(c, i)
+        return (c)
+    else:
+        return (sub(a, b))
