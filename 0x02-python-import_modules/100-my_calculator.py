@@ -1,6 +1,4 @@
 #!/usr/bin/python3
-from calculator_1 import add, sub, mul, div
-
 
 def arg_calc(argv):
     n = len(argv) - 1
