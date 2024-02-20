@@ -1,38 +1,46 @@
 #!/usr/bin/python3
+
 import sys
+import signal
 
+# Initialize variables
+total_size = 0
+status_codes = {str(code): 0 for code in [200, 301, 400, 401, 403, 404, 405, 500]}
+line_count = 0
 
-def print_status():
-    '''
-        Printing the status of the request
-    '''
-    counter = 0
-    size = 0
-    file_size = 0
-    status_codes = {"200": 0, "301": 0, "400": 0, "401": 0,
-                    "403": 0, "404": 0, "405": 0, "500": 0}
+# Function to handle CTRL+C interruption
+def signal_handler(sig, frame):
+    print_statistics()
+    sys.exit(0)
 
-    for l in sys.stdin:
-        line = l.split()
-        try:
-            size += int(line[-1])
-            code = line[-2]
-            status_codes[code] += 1
-        except:
-            continue
-        if counter == 9:
-            print("File size: {}".format(size))
-            for key, val in sorted(status_codes.items()):
-                if (val != 0):
-                    print("{}: {}".format(key, val))
-            counter = 0
-        counter += 1
-    if counter < 9:
-        print("File size: {}".format(size))
-        for key, val in sorted(status_codes.items()):
-            if (val != 0):
-                print("{}: {}".format(key, val))
+# Function to print statistics
+def print_statistics():
+    print(f"Total file size: {total_size}")
+    for code, count in sorted(status_codes.items()):
+        if count:
+            print(f"{code}: {count}")
 
+# Attach the signal handler for SIGINT (CTRL+C)
+signal.signal(signal.SIGINT, signal_handler)
 
-if __name__ == "__main__":
-    print_status()
+try:
+    for line in sys.stdin:
+        line_count += 1
+        parts = line.split()
+        status_code = parts[-2]
+        file_size = int(parts[-1])
+
+        # Update total size and status code count
+        total_size += file_size
+        if status_code in status_codes:
+            status_codes[status_code] += 1
+
+        # Print statistics every 10 lines
+        if line_count % 10 == 0:
+            print_statistics()
+
+except KeyboardInterrupt:
+    # Handle any other keyboard interruption
+    print_statistics()
+    sys.exit(0)
+
